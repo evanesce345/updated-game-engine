@@ -7,11 +7,16 @@ export default function Ufo(context, x, y, dx) {
   this.y = y;
   this.dx = dx;
 
+  this.lastPosX = x;
+
   // Ideally the tractor beam would be its own class to make this more readable
   this.beamLeftX = -300;
   this.beamRightX = 300;
   this.beamLeftX_velocity = 0.1;
   this.beamRightX_velocity = 0.1;
+
+  this.lastBeamLeft = -300;
+  this.lastBeamRight = 300;
 
   // Same with these lights
   this.lightSize = 5;
@@ -105,12 +110,16 @@ Ufo.prototype.drawLights = function () {
   this.c.restore();
 };
 
-Ufo.prototype.drawBeam = function () {
+Ufo.prototype.drawBeam = function (interp) {
   this.c.beginPath();
   this.c.moveTo(0, 0);
 
-  this.c.lineTo(this.beamLeftX, this.c.canvas.clientHeight);
-  this.c.lineTo(this.beamRightX, this.c.canvas.clientHeight);
+  var interpLeft =
+    this.lastBeamLeft + (this.beamLeftX - this.lastBeamLeft) * interp;
+  var interpRight =
+    this.lastBeamRight + (this.beamRightX - this.lastBeamRight) * interp;
+  this.c.lineTo(interpLeft, this.c.canvas.clientHeight);
+  this.c.lineTo(interpRight, this.c.canvas.clientHeight);
   this.c.lineTo(0, 0);
 
   this.c.fillStyle = "rgba(166, 255, 252, 0.3)";
@@ -125,6 +134,7 @@ Ufo.prototype.update = function (delta) {
     this.dx = -this.dx;
   }
 
+  this.lastPosX = this.x;
   this.x += this.dx * delta;
 
   // Update tractor beam position
@@ -135,6 +145,8 @@ Ufo.prototype.update = function (delta) {
     this.beamRightX_velocity = -this.beamRightX_velocity;
   }
 
+  this.lastBeamLeft = this.beamLeftX;
+  this.lastBeamRight = this.beamRightX;
   this.beamLeftX += this.beamLeftX_velocity * delta;
   this.beamRightX += this.beamRightX_velocity * delta;
 
@@ -160,12 +172,12 @@ Ufo.prototype.update = function (delta) {
   this.leftLegRot += this.leftRotSpeed * delta;
 };
 
-Ufo.prototype.draw = function () {
-  this.c.save();
-  this.c.translate(this.x, this.y);
+Ufo.prototype.draw = function (interp) {
+  var interpolate = this.lastPosX + (this.x - this.lastPosX) * interp;
+  this.c.translate(interpolate, this.y);
 
   // Draw tractor beam
-  this.drawBeam();
+  this.drawBeam(interp);
 
   // Draw body
   this.drawBody();

@@ -51,7 +51,7 @@ function mainLoop(timestamp) {
     update(timestep);
     delta -= timestep;
   }
-  draw();
+  draw(delta / timestep);
 
   requestAnimationFrame(mainLoop);
 }
@@ -66,10 +66,10 @@ function update(timestep) {
   // }
 }
 
-function draw() {
+function draw(interp) {
   c.clearRect(0, 0, canvas.width, canvas.height);
   c.save();
-  ufo.draw();
+  ufo.draw(interp);
   c.restore();
 
   c.save();
