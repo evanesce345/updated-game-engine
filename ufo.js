@@ -15,8 +15,8 @@ export default function Ufo(context, x, y, dx) {
   this.beamLeftX_velocity = 0.1;
   this.beamRightX_velocity = 0.1;
 
-  this.lastBeamLeft = -300;
-  this.lastBeamRight = 300;
+  this.lastBeamLeft = this.beamLeftX;
+  this.lastBeamRight = this.beamRightX;
 
   // Same with these lights
   this.lightSize = 5;
@@ -27,6 +27,9 @@ export default function Ufo(context, x, y, dx) {
   this.rightLegRot = (-30 * Math.PI) / 180;
   this.leftRotSpeed = (0.015 * Math.PI) / 180;
   this.rightRotSpeed = (-0.015 * Math.PI) / 180;
+
+  this.lastLeftRot = this.leftLegRot;
+  this.lastRightRot = this.rightLegRot;
 }
 
 Ufo.prototype.drawBody = function () {
@@ -46,11 +49,13 @@ Ufo.prototype.drawHead = function () {
   this.c.fill();
 };
 
-Ufo.prototype.drawLegs = function () {
+Ufo.prototype.drawLegs = function (interp) {
   // Right leg
   this.c.save();
   this.c.translate(50, 24);
-  this.c.rotate(this.rightLegRot);
+  var interpRightRot =
+    this.lastRightRot + (this.rightLegRot - this.lastRightRot) * interp;
+  this.c.rotate(interpRightRot);
   this.c.fillStyle = this.bodyColor;
   this.c.strokeRect(0, 0, 5, 30);
   this.c.fillRect(0, 0, 5, 30);
@@ -66,7 +71,9 @@ Ufo.prototype.drawLegs = function () {
   this.c.restore();
   this.c.save();
   this.c.translate(-55, 22);
-  this.c.rotate(this.leftLegRot);
+  var interpLeftRot =
+    this.lastLeftRot + (this.leftLegRot - this.lastLeftRot) * interp;
+  this.c.rotate(interpLeftRot);
   this.c.fillStyle = this.bodyColor;
   this.c.strokeRect(0, 0, 5, 30);
   this.c.fillRect(0, 0, 5, 30);
@@ -168,6 +175,8 @@ Ufo.prototype.update = function (delta) {
     this.rightRotSpeed = -this.rightRotSpeed;
   }
 
+  this.lastLeftRot = this.leftLegRot;
+  this.lastRightRot = this.rightLegRot;
   this.rightLegRot += this.rightRotSpeed * delta;
   this.leftLegRot += this.leftRotSpeed * delta;
 };
@@ -189,7 +198,7 @@ Ufo.prototype.draw = function (interp) {
   this.c.restore();
 
   // Draw legs
-  this.drawLegs();
+  this.drawLegs(interp);
 
   // Draw lights
   this.drawLights();

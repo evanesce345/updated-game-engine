@@ -1,17 +1,22 @@
 export default function Grass(context, x, y) {
-  this.x = x;
-  this.y = y;
   this.c = context;
 
+  this.x = x;
+  this.y = y;
+
   this.rot = 0;
-  this.rotSpeed = (0.03 * Math.PI) / 180;
+  this.rotSpeed = (0.025 * Math.PI) / 180;
+
+  this.lastRot = this.rot;
 }
 
-Grass.prototype.draw = function () {
+Grass.prototype.draw = function (interp) {
   this.c.save();
   this.c.translate(this.x, this.y);
   this.c.rotate(Math.PI);
-  this.c.rotate(this.rot);
+
+  var interpolate = this.lastRot + (this.rot - this.lastRot) * interp;
+  this.c.rotate(interpolate);
 
   this.c.beginPath();
   this.c.bezierCurveTo(5, 5, 5, 15, 5, 10);
@@ -29,5 +34,6 @@ Grass.prototype.update = function (delta) {
     this.rotSpeed = -this.rotSpeed;
   }
 
+  this.lastRot = this.rot;
   this.rot += this.rotSpeed * delta;
 };

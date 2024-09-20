@@ -73,8 +73,8 @@ function draw(interp) {
   c.restore();
 
   c.save();
-  grassArray.forEach((grass) => grass.draw());
-  grassArray2.forEach((grass) => grass.draw());
+  grassArray.forEach((grass) => grass.draw(interp));
+  grassArray2.forEach((grass) => grass.draw(interp));
   c.restore();
 
   // Draw FPS counter
