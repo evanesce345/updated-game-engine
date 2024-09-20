@@ -1,16 +1,17 @@
 export default function Ufo(context, x, y, dx) {
+  this.c = context;
+  this.bodyColor = "#ced3d4";
+
+  // Body posiiton
   this.x = x;
   this.y = y;
   this.dx = dx;
-  this.c = context;
-
-  this.bodyColor = "#ced3d4";
 
   // Ideally the tractor beam would be its own class to make this more readable
   this.beamLeftX = -300;
   this.beamRightX = 300;
-  this.beamLeftX_velocity = 1;
-  this.beamRightX_velocity = 1;
+  this.beamLeftX_velocity = 0.1;
+  this.beamRightX_velocity = 0.1;
 
   // Same with these lights
   this.lightSize = 5;
@@ -19,8 +20,8 @@ export default function Ufo(context, x, y, dx) {
   // And the legs
   this.leftLegRot = (30 * Math.PI) / 180;
   this.rightLegRot = (-30 * Math.PI) / 180;
-  this.leftRotSpeed = (0.1 * Math.PI) / 180;
-  this.rightRotSpeed = (-0.1 * Math.PI) / 180;
+  this.leftRotSpeed = (0.015 * Math.PI) / 180;
+  this.rightRotSpeed = (-0.015 * Math.PI) / 180;
 }
 
 Ufo.prototype.drawBody = function () {
@@ -118,13 +119,13 @@ Ufo.prototype.drawBeam = function () {
   this.c.stroke();
 };
 
-Ufo.prototype.update = function () {
+Ufo.prototype.update = function (delta) {
   // Update body position
   if (this.x - 80 < 0 || this.x + 80 > this.c.canvas.clientWidth) {
     this.dx = -this.dx;
   }
 
-  this.x += this.dx;
+  this.x += this.dx * delta;
 
   // Update tractor beam position
   if (this.beamLeftX > -100 || this.beamLeftX < -300) {
@@ -134,8 +135,8 @@ Ufo.prototype.update = function () {
     this.beamRightX_velocity = -this.beamRightX_velocity;
   }
 
-  this.beamLeftX += this.beamLeftX_velocity;
-  this.beamRightX += this.beamRightX_velocity;
+  this.beamLeftX += this.beamLeftX_velocity * delta;
+  this.beamRightX += this.beamRightX_velocity * delta;
 
   // Update lights
   if (this.lightSize < 5 || this.lightSize > 8) {
@@ -155,8 +156,8 @@ Ufo.prototype.update = function () {
     this.rightRotSpeed = -this.rightRotSpeed;
   }
 
-  this.rightLegRot += this.rightRotSpeed;
-  this.leftLegRot += this.leftRotSpeed;
+  this.rightLegRot += this.rightRotSpeed * delta;
+  this.leftLegRot += this.leftRotSpeed * delta;
 };
 
 Ufo.prototype.draw = function () {

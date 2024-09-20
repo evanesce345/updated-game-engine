@@ -4,7 +4,7 @@ export default function Grass(context, x, y) {
   this.c = context;
 
   this.rot = 0;
-  this.rotSpeed = (0.1 * Math.PI) / 180;
+  this.rotSpeed = (0.03 * Math.PI) / 180;
 }
 
 Grass.prototype.draw = function () {
@@ -23,11 +23,11 @@ Grass.prototype.draw = function () {
   this.c.restore();
 };
 
-Grass.prototype.update = function () {
+Grass.prototype.update = function (delta) {
   var limit = (10 * Math.PI) / 180;
   if (this.rot < -limit || this.rot > limit) {
     this.rotSpeed = -this.rotSpeed;
   }
 
-  this.rot += this.rotSpeed;
+  this.rot += this.rotSpeed * delta;
 };
