@@ -1,5 +1,5 @@
 addEventListener("message", (event) => {
-  var e = { ...event.data };
+  var e = event.data;
   delete e.c;
 
   // Update body position
@@ -45,5 +45,5 @@ addEventListener("message", (event) => {
   e.rightLegRot += e.rightRotSpeed * e.delta;
   e.leftLegRot += e.leftRotSpeed * e.delta;
 
-  postMessage({ ...e });
+  postMessage(e);
 });
