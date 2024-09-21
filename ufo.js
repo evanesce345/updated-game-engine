@@ -30,7 +30,13 @@ export default function Ufo(context, x, y, dx) {
 
   this.lastLeftRot = this.leftLegRot;
   this.lastRightRot = this.rightLegRot;
+
+  ufoWorker.addEventListener("message", (ev) => {
+    Object.assign(this, ev.data);
+  });
 }
+
+const ufoWorker = new Worker("./worker_ufo.js");
 
 Ufo.prototype.drawBody = function () {
   this.c.beginPath();
@@ -136,49 +142,56 @@ Ufo.prototype.drawBeam = function (interp) {
 };
 
 Ufo.prototype.update = function (delta) {
+  ufoWorker.postMessage({
+    ...this,
+    delta: delta,
+    c: this.c.canvas.clientWidth,
+    yeet: this.c.canvas.clientWidth,
+  });
+
   // Update body position
-  if (this.x - 80 < 0 || this.x + 80 > this.c.canvas.clientWidth) {
-    this.dx = -this.dx;
-  }
+  // if (this.x - 80 < 0 || this.x + 80 > this.c.canvas.clientWidth) {
+  //   this.dx = -this.dx;
+  // }
 
-  this.lastPosX = this.x;
-  this.x += this.dx * delta;
+  // this.lastPosX = this.x;
+  // this.x += this.dx * delta;
 
-  // Update tractor beam position
-  if (this.beamLeftX > -100 || this.beamLeftX < -300) {
-    this.beamLeftX_velocity = -this.beamLeftX_velocity;
-  }
-  if (this.beamRightX < 100 || this.beamRightX > 300) {
-    this.beamRightX_velocity = -this.beamRightX_velocity;
-  }
+  // // Update tractor beam position
+  // if (this.beamLeftX > -100 || this.beamLeftX < -300) {
+  //   this.beamLeftX_velocity = -this.beamLeftX_velocity;
+  // }
+  // if (this.beamRightX < 100 || this.beamRightX > 300) {
+  //   this.beamRightX_velocity = -this.beamRightX_velocity;
+  // }
 
-  this.lastBeamLeft = this.beamLeftX;
-  this.lastBeamRight = this.beamRightX;
-  this.beamLeftX += this.beamLeftX_velocity * delta;
-  this.beamRightX += this.beamRightX_velocity * delta;
+  // this.lastBeamLeft = this.beamLeftX;
+  // this.lastBeamRight = this.beamRightX;
+  // this.beamLeftX += this.beamLeftX_velocity * delta;
+  // this.beamRightX += this.beamRightX_velocity * delta;
 
-  // Update lights
-  if (this.lightSize < 5 || this.lightSize > 8) {
-    this.lightScaling = -this.lightScaling;
-  }
+  // // Update lights
+  // if (this.lightSize < 5 || this.lightSize > 8) {
+  //   this.lightScaling = -this.lightScaling;
+  // }
 
-  this.lightSize += this.lightScaling;
+  // this.lightSize += this.lightScaling;
 
-  // Update legs
-  var legLimit = (40 * Math.PI) / 180;
-  var legLimit2 = (20 * Math.PI) / 180;
+  // // Update legs
+  // var legLimit = (40 * Math.PI) / 180;
+  // var legLimit2 = (20 * Math.PI) / 180;
 
-  if (this.leftLegRot > legLimit || this.leftLegRot < legLimit2) {
-    this.leftRotSpeed = -this.leftRotSpeed;
-  }
-  if (this.rightLegRot < -legLimit || this.rightLegRot > -legLimit2) {
-    this.rightRotSpeed = -this.rightRotSpeed;
-  }
+  // if (this.leftLegRot > legLimit || this.leftLegRot < legLimit2) {
+  //   this.leftRotSpeed = -this.leftRotSpeed;
+  // }
+  // if (this.rightLegRot < -legLimit || this.rightLegRot > -legLimit2) {
+  //   this.rightRotSpeed = -this.rightRotSpeed;
+  // }
 
-  this.lastLeftRot = this.leftLegRot;
-  this.lastRightRot = this.rightLegRot;
-  this.rightLegRot += this.rightRotSpeed * delta;
-  this.leftLegRot += this.leftRotSpeed * delta;
+  // this.lastLeftRot = this.leftLegRot;
+  // this.lastRightRot = this.rightLegRot;
+  // this.rightLegRot += this.rightRotSpeed * delta;
+  // this.leftLegRot += this.leftRotSpeed * delta;
 };
 
 Ufo.prototype.draw = function (interp) {
