@@ -1,5 +1,6 @@
 import Ufo from "./ufo.js";
 import Grass from "./grass.js";
+import Cow from "./cow.js";
 
 // Setting up the canvas
 var canvas = document.querySelector("canvas");
@@ -17,8 +18,9 @@ setInterval(() => {
   framesThisSecond = 0;
 }, 1000);
 
-// Create ufo and grass
+// Create ufo and grass and cow
 var ufo = new Ufo(c, canvas.width / 2, canvas.height / 4, 0.2);
+var cow = new Cow(c, 50, canvas.height - 80);
 
 var grassArray = [];
 var grassArray2 = [];
@@ -40,10 +42,10 @@ var lastFrameTimeMs = 0;
 var timestep = 1000 / 144;
 var delta = 0;
 
-requestAnimationFrame(mainLoop);
-
 // Game Loop
 function mainLoop(timestamp) {
+  processInput();
+
   delta += timestamp - lastFrameTimeMs;
   lastFrameTimeMs = timestamp;
 
@@ -56,8 +58,81 @@ function mainLoop(timestamp) {
   requestAnimationFrame(mainLoop);
 }
 
+// Input processing
+var keysdown = {
+  left: {
+    pressed: false,
+  },
+  right: {
+    pressed: false,
+  },
+};
+
+window.addEventListener(
+  "keydown",
+  (e) => {
+    if (e.defaultPrevented) {
+      return;
+    }
+
+    switch (e.key) {
+      case "d":
+        keysdown.right.pressed = true;
+        break;
+      case "D":
+        keysdown.right.pressed = true;
+        break;
+      case "a":
+        keysdown.left.pressed = true;
+        break;
+      case "A":
+        keysdown.left.pressed = true;
+        break;
+    }
+
+    e.preventDefault();
+  },
+  true
+);
+
+window.addEventListener(
+  "keyup",
+  (e) => {
+    if (e.defaultPrevented) {
+      return;
+    }
+
+    switch (e.key) {
+      case "d":
+        keysdown.right.pressed = false;
+        break;
+      case "D":
+        keysdown.right.pressed = false;
+        break;
+      case "a":
+        keysdown.left.pressed = false;
+        break;
+      case "A":
+        keysdown.left.pressed = false;
+        break;
+    }
+
+    e.preventDefault();
+  },
+  true
+);
+
+function processInput() {
+  if (keysdown.right.pressed) {
+    cow.dx = 0.5;
+  } else if (keysdown.left.pressed) {
+    cow.dx = -0.5;
+  } else cow.dx = 0;
+}
+
 function update(timestep) {
   ufo.update(timestep);
+  cow.update(timestep);
   grassArray.forEach((grass) => grass.update(timestep));
 
   // test optimization
@@ -77,6 +152,10 @@ function draw(interp) {
   grassArray2.forEach((grass) => grass.draw(interp));
   c.restore();
 
+  c.save();
+  cow.draw(interp);
+  c.restore();
+
   // Draw FPS counter
   c.save();
   c.fillStyle = "white";
@@ -90,3 +169,5 @@ function draw(interp) {
   //   console.log("frame: " + frameCount);
   // }
 }
+
+requestAnimationFrame(mainLoop);
