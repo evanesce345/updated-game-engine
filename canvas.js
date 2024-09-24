@@ -1,6 +1,7 @@
 import Ufo from "./ufo.js";
 import Grass from "./grass.js";
 import Cow from "./cow.js";
+import collisionUpdate from "./collision_detection.js";
 
 // Setting up the canvas
 var canvas = document.querySelector("canvas");
@@ -134,6 +135,7 @@ function update(timestep) {
   ufo.update(timestep);
   cow.update(timestep);
   grassArray.forEach((grass) => grass.update(timestep));
+  collisionUpdate(ufo, cow, c);
 
   // test optimization
   // if (frameCount < 100) {

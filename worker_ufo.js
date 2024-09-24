@@ -11,10 +11,10 @@ addEventListener("message", (event) => {
   e.x += e.dx * e.delta;
 
   // Update tractor beam position
-  if (e.beamLeftX > -100 || e.beamLeftX < -300) {
+  if (e.beamLeftX > -50 || e.beamLeftX < -175) {
     e.beamLeftX_velocity = -e.beamLeftX_velocity;
   }
-  if (e.beamRightX < 100 || e.beamRightX > 300) {
+  if (e.beamRightX < 50 || e.beamRightX > 175) {
     e.beamRightX_velocity = -e.beamRightX_velocity;
   }
 

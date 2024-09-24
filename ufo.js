@@ -10,13 +10,16 @@ export default function Ufo(context, x, y, dx) {
   this.lastPosX = x;
 
   // Ideally the tractor beam would be its own class to make this more readable
-  this.beamLeftX = -300;
-  this.beamRightX = 300;
+  this.beamLeftX = -50;
+  this.beamRightX = 50;
   this.beamLeftX_velocity = 0.1;
   this.beamRightX_velocity = 0.1;
 
   this.lastBeamLeft = this.beamLeftX;
   this.lastBeamRight = this.beamRightX;
+
+  this.beamFill = "rgba(166, 255, 252, 0.3)";
+  this.beamStroke = "#38caff";
 
   // Same with these lights
   this.lightSize = 5;
@@ -135,9 +138,9 @@ Ufo.prototype.drawBeam = function (interp) {
   this.c.lineTo(interpRight, this.c.canvas.clientHeight);
   this.c.lineTo(0, 0);
 
-  this.c.fillStyle = "rgba(166, 255, 252, 0.3)";
+  this.c.fillStyle = this.beamFill;
   this.c.fill();
-  this.c.strokeStyle = "#38caff";
+  this.c.strokeStyle = this.beamStroke;
   this.c.stroke();
 };
 
