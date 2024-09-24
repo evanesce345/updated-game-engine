@@ -1,15 +1,16 @@
-export default function collisionUpdate(ufo, cow, c) {
+export default function collisionUpdate(ufo, cow, collisionOn) {
+  if (!collisionOn) {
+    return;
+  }
   if (
     getDistance(cow.x, cow.y, ufo.x + ufo.beamLeftX + 50, cow.y) <
       cow.bodyRadius ||
     getDistance(cow.x, cow.y, ufo.x + ufo.beamRightX - 50, cow.y) <
       cow.bodyRadius
   ) {
-    ufo.beamStroke = "#ff0000";
-    ufo.beamFill = "rgba(255, 0, 0, 0.3)";
-    return false;
-  } else {
     return true;
+  } else {
+    return false;
   }
 }
 

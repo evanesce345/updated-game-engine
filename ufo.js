@@ -126,7 +126,20 @@ Ufo.prototype.drawLights = function () {
   this.c.restore();
 };
 
-Ufo.prototype.drawBeam = function (interp) {
+Ufo.prototype.drawBeam = function (interp, collisionOn, collided) {
+  if (collisionOn) {
+    this.beamFill = "rgba(166, 255, 252, 0.3)";
+    this.beamStroke = "#38caff";
+  } else {
+    this.beamFill = "rgba(0, 0, 0, 0.0)";
+    this.beamStroke = "rgba(0, 0, 0, 0.0)";
+  }
+
+  if (collided) {
+    this.beamStroke = "#ff0000";
+    this.beamFill = "rgba(255, 0, 0, 0.3)";
+  }
+
   this.c.beginPath();
   this.c.moveTo(0, 0);
 
@@ -197,12 +210,12 @@ Ufo.prototype.update = function (delta) {
   // this.leftLegRot += this.leftRotSpeed * delta;
 };
 
-Ufo.prototype.draw = function (interp) {
+Ufo.prototype.draw = function (interp, collisionOn, collided) {
   var interpolate = this.lastPosX + (this.x - this.lastPosX) * interp;
   this.c.translate(interpolate, this.y);
 
   // Draw tractor beam
-  this.drawBeam(interp);
+  this.drawBeam(interp, collisionOn, collided);
 
   // Draw body
   this.drawBody();

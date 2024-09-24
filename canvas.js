@@ -20,6 +20,8 @@ setInterval(() => {
 }, 1000);
 
 // Create ufo and grass and cow
+//----------------------------------------------------------------------
+
 var ufo = new Ufo(c, canvas.width / 2, canvas.height / 4, 0.2);
 var cow = new Cow(c, 50, canvas.height - 80);
 
@@ -36,6 +38,9 @@ for (var i = 0; i < 300; i++) {
   posX += 10;
 }
 
+// Game Loop
+//----------------------------------------------------------------------
+
 // Fixed time step, variable rendering
 var frameCount = 0;
 
@@ -43,7 +48,6 @@ var lastFrameTimeMs = 0;
 var timestep = 1000 / 144;
 var delta = 0;
 
-// Game Loop
 function mainLoop(timestamp) {
   if (!running) {
     return;
@@ -64,6 +68,8 @@ function mainLoop(timestamp) {
 }
 
 // Input processing
+//----------------------------------------------------------------------
+
 var keysdown = {
   left: {
     pressed: false,
@@ -131,6 +137,9 @@ window.addEventListener(
   true
 );
 
+// ProcessInput, Update and Draw
+//----------------------------------------------------------------------
+
 function processInput() {
   if (keysdown.right.pressed) {
     cow.dx = 0.5;
@@ -139,14 +148,26 @@ function processInput() {
   } else cow.dx = 0;
 }
 
-var isActive = true;
+// toggle beam collision
+var collisionOn = true;
+var timer = 2000;
+setInterval(() => {
+  collisionOn = !collisionOn;
+  if (collisionOn) {
+    timer = 2000;
+  } else {
+    timer = 100;
+  }
+}, timer);
+
+var collided = false;
 function update(timestep) {
   ufo.update(timestep);
   cow.update(timestep);
   grassArray.forEach((grass) => grass.update(timestep));
 
-  isActive = collisionUpdate(ufo, cow, c);
-  if (!isActive) {
+  collided = collisionUpdate(ufo, cow, collisionOn);
+  if (collided) {
     stop();
   }
 
@@ -159,7 +180,7 @@ function update(timestep) {
 function draw(interp) {
   c.clearRect(0, 0, canvas.width, canvas.height);
   c.save();
-  ufo.draw(interp);
+  ufo.draw(interp, collisionOn, collided);
   c.restore();
 
   c.save();
@@ -184,6 +205,9 @@ function draw(interp) {
   //   console.log("frame: " + frameCount);
   // }
 }
+
+// Starting and Stopping the game
+//----------------------------------------------------------------------
 
 // Starting the game
 var running = false;
