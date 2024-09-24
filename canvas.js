@@ -45,6 +45,10 @@ var delta = 0;
 
 // Game Loop
 function mainLoop(timestamp) {
+  if (!running) {
+    return;
+  }
+
   processInput();
 
   delta += timestamp - lastFrameTimeMs;
@@ -56,7 +60,7 @@ function mainLoop(timestamp) {
   }
   draw(delta / timestep);
 
-  requestAnimationFrame(mainLoop);
+  frameID = requestAnimationFrame(mainLoop);
 }
 
 // Input processing
@@ -74,6 +78,10 @@ window.addEventListener(
   (e) => {
     if (e.defaultPrevented) {
       return;
+    }
+
+    if (!started) {
+      start();
     }
 
     switch (e.key) {
@@ -131,11 +139,16 @@ function processInput() {
   } else cow.dx = 0;
 }
 
+var isActive = true;
 function update(timestep) {
   ufo.update(timestep);
   cow.update(timestep);
   grassArray.forEach((grass) => grass.update(timestep));
-  collisionUpdate(ufo, cow, c);
+
+  isActive = collisionUpdate(ufo, cow, c);
+  if (!isActive) {
+    stop();
+  }
 
   // test optimization
   // if (frameCount < 100) {
@@ -172,4 +185,31 @@ function draw(interp) {
   // }
 }
 
-requestAnimationFrame(mainLoop);
+// Starting the game
+var running = false;
+var started = false;
+var frameID;
+
+function start() {
+  if (!started) {
+    // don't request multiple frames
+    started = true;
+    // Dummy frame to get our timestamps and initial drawing right.
+    // Track the frame ID so we can cancel it if we stop quickly.
+    frameID = requestAnimationFrame(function (timestamp) {
+      draw(1); // initial draw
+      running = true;
+      // reset some time tracking variables
+      lastFrameTimeMs = timestamp;
+      framesThisSecond = 0;
+      // actually start the main loop
+      frameID = requestAnimationFrame(mainLoop);
+    });
+  }
+}
+
+// Stopping the game
+function stop() {
+  running = false;
+  cancelAnimationFrame(frameID);
+}

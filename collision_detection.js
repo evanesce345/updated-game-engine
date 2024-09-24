@@ -7,6 +7,9 @@ export default function collisionUpdate(ufo, cow, c) {
   ) {
     ufo.beamStroke = "#ff0000";
     ufo.beamFill = "rgba(255, 0, 0, 0.3)";
+    return false;
+  } else {
+    return true;
   }
 }
 
