@@ -45,7 +45,7 @@ for (var i = 0; i < 300; i++) {
 var frameCount = 0;
 
 var lastFrameTimeMs = 0;
-var timestep = 1000 / 144;
+var timestep = 1000 / 60;
 var delta = 0;
 
 function mainLoop(timestamp) {
