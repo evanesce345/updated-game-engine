@@ -1,3 +1,5 @@
 # updated-game-engine
 
-I made cool UFO :D
+Press any button to start.
+
+Your goal is to avoid the UFO beam for as long as possible.
